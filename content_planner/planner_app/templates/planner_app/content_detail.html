@@ -1,0 +1,12 @@
+{% extends 'planner_app/base.html' %}
+{% block content %}
+<h2>Детали контента</h2>
+<p><strong>Название:</strong> {{ content.title }}</p>
+<p><strong>Описание:</strong> {{ content.description }}</p>
+<p><strong>Категория:</strong> {{ content.category.name }}</p>
+<p><strong>Статус:</strong> {{ content.get_status_display }}</p>
+<p><strong>Дата публикации:</strong> {{ content.publish_date }}</p>
+
+<a href="{% url 'content_update' content.id %}">Редактировать</a> |
+<a href="{% url 'content_delete' content.id %}">Удалить</a>
+{% endblock %}

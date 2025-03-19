@@ -1,0 +1,8 @@
+{% extends 'planner_app/base.html' %}
+{% block content %}
+<h2>Удалить контент: "{{ content.title }}"?</h2>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Подтвердить удаление</button>
+</form>
+{% endblock %}

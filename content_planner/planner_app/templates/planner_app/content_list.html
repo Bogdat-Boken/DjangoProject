@@ -1,0 +1,12 @@
+{% extends 'planner_app/base.html' %}
+{% block content %}
+<h2>Список контента</h2>
+<ul>
+    {% for item in contents %}
+    <li>
+        <a href="{% url 'content_detail' item.id %}">{{ item.title }}</a>
+        ({{ item.status }})
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

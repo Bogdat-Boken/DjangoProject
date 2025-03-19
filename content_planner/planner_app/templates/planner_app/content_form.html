@@ -1,0 +1,15 @@
+{% extends 'planner_app/base.html' %}
+{% block content %}
+<h2>Создать контент</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label for="id_category">Выберите категорию:</label>
+    {{ form.category }}
+
+    <label for="id_new_category">Или введите новую категорию:</label>
+    {{ form.new_category }}
+
+    {{ form.as_p }}
+    <button type="submit">Создать</button>
+</form>
+{% endblock %}

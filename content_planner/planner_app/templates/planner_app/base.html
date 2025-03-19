@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контент Планнер — Контент-Планер</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script defer src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+
+    <!-- 🔹 Шапка -->
+    <header>
+    <a href="/" class="logo">Контент Планнер</a>
+
+    <!-- Навигация -->
+    <nav class="nav">
+        <a href="{% url 'home' %}">Главная</a>
+        <a href="{% url 'category_list' %}">Категории</a>
+        <a href="{% url 'create_category' %}">Создать категорию</a>
+        <a href="{% url 'content_list' %}">Контент</a>
+        <a href="{% url 'content_create' %}">Создать Контент</a>
+    </nav>
+    <button id="darkModeToggle">🌙</button>
+</header>
+
+
+    
+
+    <!-- 🔹 Основной контент -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+{% extends 'planner_app/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Календарь публикаций на {{ month_name }} {{ year }}</h2>
+
+<div style="display: flex; gap: 1rem;">
+    <!-- Ссылка на предыдущий месяц -->
+    {% if month == 1 %}
+        <a href="{% url 'calendar_view' year=year|add:'-1' month=12 %}">← Предыдущий</a>
+    {% else %}
+        <a href="{% url 'calendar_view' year=year month=month|add:'-1' %}">← Предыдущий</a>
+    {% endif %}
+
+    <!-- Ссылка на текущий месяц (быстрый переход) -->
+    <a href="{% url 'calendar_view' %}">Текущий месяц</a>
+
+    <!-- Ссылка на следующий месяц -->
+    {% if month == 12 %}
+        <a href="{% url 'calendar_view' year=year|add:'1' month=1 %}">Следующий →</a>
+    {% else %}
+        <a href="{% url 'calendar_view' year=year month=month|add:'1' %}">Следующий →</a>
+    {% endif %}
+</div>
+
+<table border="1" cellpadding="5" cellspacing="0" style="margin-top: 1rem;">
+    <thead>
+        <tr>
+            <th>Пн</th>
+            <th>Вт</th>
+            <th>Ср</th>
+            <th>Чт</th>
+            <th>Пт</th>
+            <th>Сб</th>
+            <th>Вс</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for week in month_weeks %}
+        <tr>
+            {% for day in week %}
+                <td
+                    {% if day.month != month %}
+                        style="background-color: #eee;"
+                    {% endif %}
+                    {% if day == today %}
+                        style="background-color: #98FB98;"
+                    {% endif %}
+                >
+                    <strong>{{ day.day }}</strong>
+                    <ul>
+                        {% for item in month_content.day %}
+                            <li>
+                                <a href="{% url 'content_detail' item.id %}">{{ item.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

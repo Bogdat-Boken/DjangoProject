@@ -1,0 +1,13 @@
+{% extends 'planner_app/base.html' %}
+
+{% block content %}
+<div class="container form-container">
+    <h2>Удалить категорию</h2>
+    <p>Вы уверены, что хотите удалить категорию "{{ category.name }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn">Удалить</button>
+        <a href="{% url 'category_list' %}" class="btn">Отмена</a>
+    </form>
+</div>
+{% endblock %} 

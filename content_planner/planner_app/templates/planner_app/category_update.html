@@ -1,0 +1,15 @@
+{% extends 'planner_app/base.html' %}
+
+{% block content %}
+<div class="container form-container">
+    <h2>Редактировать категорию</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Новое название</label>
+            <input type="text" name="name" value="{{ category.name }}" required>
+        </div>
+        <button type="submit" class="btn">Сохранить</button>
+    </form>
+</div>
+{% endblock %} 
