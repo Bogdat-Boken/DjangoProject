@@ -2,7 +2,7 @@ import calendar
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from .models import Content, Category
@@ -133,7 +133,44 @@ def base_context(request):
     return {'categories': categories}
 
 def home(request):
-    return render(request, 'planner_app/home.html')
+    # Общая статистика
+    total_content = Content.objects.count()
+    total_categories = Category.objects.count()
+    
+    # Статистика по статусам
+    draft_count = Content.objects.filter(status='draft').count()
+    planned_count = Content.objects.filter(status='planned').count()
+    published_count = Content.objects.filter(status='published').count()
+    
+    # Последние добавленные материалы
+    recent_content = Content.objects.order_by('-created_at')[:5]
+    
+    # Статистика по категориям
+    category_stats = []
+    for category in Category.objects.all():
+        count = Content.objects.filter(category=category).count()
+        category_stats.append({
+            'name': category.name,
+            'count': count
+        })
+    
+    # Контент на ближайшие 7 дней
+    upcoming_content = Content.objects.filter(
+        publish_date__gte=datetime.now(),
+        publish_date__lte=datetime.now() + timedelta(days=7)
+    ).order_by('publish_date')
+    
+    context = {
+        'total_content': total_content,
+        'total_categories': total_categories,
+        'draft_count': draft_count,
+        'planned_count': planned_count,
+        'published_count': published_count,
+        'recent_content': recent_content,
+        'category_stats': category_stats,
+        'upcoming_content': upcoming_content,
+    }
+    return render(request, 'planner_app/home.html', context)
 
 def category_update(request, category_id):
     category = get_object_or_404(Category, id=category_id)

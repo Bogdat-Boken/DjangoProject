@@ -1,12 +1,192 @@
 {% extends "planner_app/base.html" %}
 
 {% block content %}
-<div class="container home-hero">
-    <h1>Добро пожаловать в Контент Планнер</h1>
-    <p>Создавай, управляй и планируй контент как профессионал</p>
-    <div class="home-actions">
-        <a href="{% url 'content_create' %}" class="btn">Создать контент</a>
-        <a href="{% url 'category_list' %}" class="btn">Посмотреть категории</a>
+<div class="container">
+    <div class="dashboard-header">
+        <h1>Панель управления</h1>
+        <div class="quick-actions">
+            <a href="{% url 'content_create' %}" class="btn btn-primary">Создать контент</a>
+            <a href="{% url 'category_list' %}" class="btn btn-secondary">Управление категориями</a>
+        </div>
+    </div>
+
+    <!-- Статистические карточки -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Всего материалов</h3>
+            <p class="stat-number">{{ total_content }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Категорий</h3>
+            <p class="stat-number">{{ total_categories }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Черновиков</h3>
+            <p class="stat-number">{{ draft_count }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Запланировано</h3>
+            <p class="stat-number">{{ planned_count }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Опубликовано</h3>
+            <p class="stat-number">{{ published_count }}</p>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Последние материалы -->
+        <div class="dashboard-section">
+            <h2>Последние материалы</h2>
+            <div class="content-list">
+                {% for content in recent_content %}
+                <div class="content-item">
+                    <h4>{{ content.title }}</h4>
+                    <p class="content-meta">
+                        <span class="status-badge status-{{ content.status }}">{{ content.get_status_display }}</span>
+                        <span class="date">{{ content.created_at|date:"d.m.Y" }}</span>
+                    </p>
+                    <a href="{% url 'content_detail' content.id %}" class="btn btn-sm">Подробнее</a>
+                </div>
+                {% empty %}
+                <p>Нет последних материалов</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Статистика по категориям -->
+        <div class="dashboard-section">
+            <h2>Статистика по категориям</h2>
+            <div class="category-stats">
+                {% for stat in category_stats %}
+                <div class="category-stat-item">
+                    <span class="category-name">{{ stat.name }}</span>
+                    <span class="category-count">{{ stat.count }}</span>
+                </div>
+                {% empty %}
+                <p>Нет категорий</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Предстоящие публикации -->
+        <div class="dashboard-section">
+            <h2>Публикации на неделю</h2>
+            <div class="upcoming-content">
+                {% for content in upcoming_content %}
+                <div class="upcoming-item">
+                    <h4>{{ content.title }}</h4>
+                    <p class="publish-date">Публикация: {{ content.publish_date|date:"d.m.Y" }}</p>
+                    <span class="status-badge status-{{ content.status }}">{{ content.get_status_display }}</span>
+                </div>
+                {% empty %}
+                <p>Нет запланированных публикаций</p>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .dashboard-section {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .content-item, .upcoming-item {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .content-item:last-child, .upcoming-item:last-child {
+        border-bottom: none;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .status-draft { background: #f1f1f1; color: #666; }
+    .status-planned { background: #e3f2fd; color: #1976d2; }
+    .status-published { background: #e8f5e9; color: #2e7d32; }
+
+    .category-stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .category-stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #fff;
+        background: #007bff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .content-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin: 0.5rem 0;
+        font-size: 0.875rem;
+        color: #666;
+    }
+</style>
 {% endblock %}

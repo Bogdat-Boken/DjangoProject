@@ -5,34 +5,365 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Контент Планнер — Контент-Планер</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'planner_app/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'planner_app/css/category_content.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script defer src="{% static 'js/script.js' %}"></script>
 </head>
 <body>
+    <!-- Сайдбар -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="logo">
+                <i class="fas fa-calendar-alt"></i>
+                <span class="logo-text">Контент Планнер</span>
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-sections">
+                <div class="nav-section-content">
+                    <div class="nav-group">
+                        <a href="{% url 'home' %}" class="nav-item">
+                            <i class="fas fa-home"></i>
+                            <span class="nav-text">Главная</span>
+                        </a>
+                        <a href="{% url 'content_list' %}" class="nav-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span class="nav-text">Контент</span>
+                        </a>
+                        <a href="{% url 'category_list' %}" class="nav-item">
+                            <i class="fas fa-folder"></i>
+                            <span class="nav-text">Категории</span>
+                        </a>
+                        <a href="{% url 'calendar_view' %}" class="nav-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span class="nav-text">Календарь</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button id="darkModeToggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="sidebarToggle" class="sidebar-toggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+    </div>
 
-    <!-- 🔹 Шапка -->
-    <header>
-    <a href="/" class="logo">Контент Планнер</a>
+    <!-- Основной контент -->
+    <div class="main-content">
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
 
-    <!-- Навигация -->
-    <nav class="nav">
-        <a href="{% url 'home' %}">Главная</a>
-        <a href="{% url 'category_list' %}">Категории</a>
-        <a href="{% url 'create_category' %}">Создать категорию</a>
-        <a href="{% url 'content_list' %}">Контент</a>
-        <a href="{% url 'content_create' %}">Создать Контент</a>
-    </nav>
-    <button id="darkModeToggle">🌙</button>
-</header>
+<style>
+:root {
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 64px;
+    --primary-color: #0066ff;
+    --sidebar-bg: #ffffff;
+    --sidebar-hover: #f0f4f8;
+    --text-color: #1a1f36;
+    --text-muted: #697386;
+    --border-color: #eaecf0;
+    --transition-speed: 0.3s;
+}
 
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    background: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    transition: width var(--transition-speed) ease;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-header {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.logo-text {
+    opacity: 1;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.sidebar.collapsed .logo-text {
+    opacity: 0;
+}
+
+.nav-sections {
+    padding: 1rem 0.75rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.nav-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 0.5rem;
+}
+
+.nav-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.nav-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    text-decoration: none;
+    color: var(--text-color);
+    border-radius: 6px;
+    transition: all var(--transition-speed) ease;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.nav-text {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity var(--transition-speed) ease,
+                transform var(--transition-speed) ease;
+}
+
+.nav-item:hover {
+    background: var(--sidebar-hover);
+    color: var(--primary-color);
+}
+
+.nav-item i {
+    width: 1.25rem;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.nav-item:hover i {
+    color: var(--primary-color);
+}
+
+.sidebar-footer {
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.theme-toggle, .sidebar-toggle {
+    padding: 0.625rem;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+}
+
+.sidebar-toggle {
+    margin-left: auto;
+}
+
+.theme-toggle:hover, .sidebar-toggle:hover {
+    background: var(--sidebar-hover);
+}
+
+.sidebar-toggle i {
+    transition: transform var(--transition-speed) ease;
+}
+
+.sidebar.collapsed .sidebar-toggle i {
+    transform: rotate(180deg);
+}
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 2rem;
+    width: calc(100% - var(--sidebar-width));
+    transition: margin-left var(--transition-speed) ease,
+                width var(--transition-speed) ease;
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+.sidebar.collapsed .nav-label {
+    display: none;
+}
+
+.sidebar.collapsed .nav-text {
+    display: none;
+}
+
+.sidebar.collapsed .nav-section-header {
+    display: none;
+}
+
+.sidebar.collapsed .nav-section-content {
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar.collapsed .nav-item {
+    padding: 0.625rem;
+    justify-content: center;
+    width: calc(var(--sidebar-collapsed-width) - 1.5rem);
+}
+
+.sidebar.collapsed .nav-item i {
+    margin: 0;
+    width: auto;
+}
+
+.sidebar.collapsed .nav-sections {
+    padding: 0.75rem;
+}
+
+.sidebar.collapsed .nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar.collapsed .nav-group + .nav-group {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.sidebar.collapsed .sidebar-footer {
+    justify-content: center;
+}
+
+.sidebar.collapsed .theme-toggle {
+    width: 32px;
+    height: 32px;
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: var(--sidebar-collapsed-width);
+        transform: translateX(-100%);
+    }
     
+    .sidebar.mobile-visible {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+</style>
 
-    <!-- 🔹 Основной контент -->
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mainContent = document.querySelector('.main-content');
 
+    // Функция для определения мобильного устройства
+    const isMobile = () => window.innerWidth <= 768;
+
+    // Обработчик клика по кнопке toggle
+    sidebarToggle.addEventListener('click', () => {
+        if (isMobile()) {
+            sidebar.classList.toggle('mobile-visible');
+        } else {
+            sidebar.classList.toggle('collapsed');
+        }
+    });
+
+    // Обработчик изменения размера окна
+    window.addEventListener('resize', () => {
+        if (!isMobile()) {
+            sidebar.classList.remove('mobile-visible');
+        }
+    });
+
+    // Закрытие сайдбара при клике вне его на мобильных устройствах
+    mainContent.addEventListener('click', () => {
+        if (isMobile() && sidebar.classList.contains('mobile-visible')) {
+            sidebar.classList.remove('mobile-visible');
+        }
+    });
+});
+</script>
 </body>
 </html>
